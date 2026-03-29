@@ -77,7 +77,7 @@ export default function Home() {
               onChange={(e) => setEmailInput(e.target.value)}
               placeholder="Paste the email you want to reply to here..."
               className="flex-1 w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-dark-50 placeholder-dark-500 resize-none"
-              minRows={12}
+              rows={12}
             />
 
             {/* Buttons */}
@@ -127,7 +127,7 @@ export default function Home() {
               readOnly
               placeholder="Your AI-generated reply will appear here..."
               className="flex-1 w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-500 resize-none"
-              minRows={12}
+              rows={12}
             />
 
             {/* Copy Button */}

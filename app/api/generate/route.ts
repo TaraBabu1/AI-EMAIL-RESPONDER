@@ -1,8 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-
 const systemPrompts = {
   professional:
     'You are a professional email assistant. Generate a concise, formal email reply. Keep it under 150 words. Focus on clarity, professionalism, and actionable next steps. Use proper business language.',
@@ -33,13 +31,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = (process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || '').trim();
+    if (!apiKey) {
       return NextResponse.json(
         { error: 'API key not configured' },
         { status: 500 }
       );
     }
 
+    const genAI = new GoogleGenerativeAI(apiKey);
     const systemPrompt = systemPrompts[tone as ToneType];
 
     const prompt = `${systemPrompt}
