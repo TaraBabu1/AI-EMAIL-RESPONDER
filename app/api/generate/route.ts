@@ -8,9 +8,11 @@ const systemPrompts = {
     'You are a friendly email assistant. Generate a warm, approachable email reply. Keep it under 150 words. Use a conversational tone while remaining professional. Show genuine interest and enthusiasm.',
   decline:
     'You are a polite email assistant. Generate a graceful decline or refusal email. Keep it under 150 words. Be respectful, appreciative, and offer an alternative if possible. Maintain goodwill while declining clearly.',
+  assertive:
+    'You are an assertive email assistant. Generate a confident, decisive email reply. Keep it under 150 words. Be direct, clear, and firm while maintaining respect and professionalism.',
 };
 
-type ToneType = 'professional' | 'friendly' | 'decline';
+type ToneType = 'professional' | 'friendly' | 'decline' | 'assertive';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,9 +26,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!tone || !['professional', 'friendly', 'decline'].includes(tone)) {
+    if (!tone || !['professional', 'friendly', 'decline', 'assertive'].includes(tone)) {
       return NextResponse.json(
-        { error: 'Invalid tone. Must be: professional, friendly, or decline' },
+        { error: 'Invalid tone. Must be: professional, friendly, decline, or assertive' },
         { status: 400 }
       );
     }
@@ -50,13 +52,12 @@ ${emailContent}
 Generate only the reply email body. Do not include "Subject:" or any other metadata. Just the email content.`;
 
     // Use a known available model in this project.
-    // These are observed from ListModels for the API key used in this environment.
+    // Priority order: try more stable models first
     const fallbackModels = [
+      'gemini-1.5-flash',
+      'gemini-1.5-pro',
       'gemini-2.5-flash',
-      'gemini-2.5-pro',
       'gemini-2.0-flash',
-      'gemini-2.0-flash-001',
-      'gemini-2.0-flash-lite-001',
     ];
 
     let result;
@@ -70,6 +71,7 @@ Generate only the reply email body. Do not include "Subject:" or any other metad
         );
         result = await candidateModel.generateContent(prompt);
         lastError = null;
+        console.log(`Successfully used model: ${candidate}`);
         break;
       } catch (innerError) {
         lastError = innerError instanceof Error ? innerError : new Error(String(innerError));
@@ -78,7 +80,7 @@ Generate only the reply email body. Do not include "Subject:" or any other metad
     }
 
     if (!result) {
-      throw lastError || new Error('No suitable AI model available.');
+      throw lastError || new Error('No suitable AI model available. Please verify your API key and billing settings at https://console.cloud.google.com/');
     }
 
     const response = result.response;

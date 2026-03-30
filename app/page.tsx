@@ -9,7 +9,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [copyFeedback, setCopyFeedback] = useState(false);
 
-  const generateReply = async (tone: 'professional' | 'friendly' | 'decline') => {
+  const generateReply = async (tone: 'professional' | 'friendly' | 'decline' | 'assertive') => {
     if (!emailInput.trim()) {
       setError('Please paste an email first');
       return;
@@ -105,6 +105,14 @@ export default function Home() {
               >
                 {loading ? 'Generating...' : '🙏 Polite Decline'}
               </button>
+
+              <button
+                onClick={() => generateReply('assertive')}
+                disabled={loading}
+                className="px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-dark-600 text-white font-semibold rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-dark-900"
+              >
+                {loading ? 'Generating...' : '🚀 Assertive'}
+              </button>
             </div>
           </div>
 
@@ -148,8 +156,7 @@ export default function Home() {
           <ul className="space-y-2 text-dark-300">
             <li>• <strong>Professional:</strong> Formal, structured replies for business communications</li>
             <li>• <strong>Friendly:</strong> Warm, conversational replies while staying professional</li>
-            <li>• <strong>Polite Decline:</strong> Respectful refusals that maintain goodwill</li>
-          </ul>
+            <li>• <strong>Polite Decline:</strong> Respectful refusals that maintain goodwill</li>              <li>• <strong>Assertive:</strong> Confident, direct replies with clear expectations and decisive next steps</li>          </ul>
         </div>
 
         {/* Footer */}
